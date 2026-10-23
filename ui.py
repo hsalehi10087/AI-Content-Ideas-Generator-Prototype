@@ -8,7 +8,7 @@ from serp import search_google_web_automation
 from my_functions import get_article_from_url, generate_ideas
 
 
-prompt = "extract 5-10 content ideas from the [post], and return the list in json format, [post]: {post}"
+prompt = "از این مطلب ۵ تا ۱۰ ایده‌ی تبلیغاتی برای رستوران پارکلند در اصفهان استخراج کن. ایده‌ها باید برای اینستاگرام مناسب باشند و به فارسی نوشته شوند. خروجی را به فرمت JSON برگردان. مطلب: {post}"
 
 # Define the Ideas class
 class Ideas(BaseModel):
@@ -59,7 +59,7 @@ async def main(search_query, st):
 st.title("Content Idea Generator")
 
 # User input fields
-search_query = st.text_input("Enter the search query:", "AI in marketing")
+search_query = st.text_input("Enter the search query:", "restaurant marketing ideas Isfahan")
 
 # Button to trigger the process
 if st.button("Generate Ideas"):

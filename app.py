@@ -7,11 +7,11 @@ from serp import search_google_web_automation  # Custom function to automate Goo
 from my_functions import get_article_from_url, generate_ideas  # Custom functions for processing articles
 
 # Setting input parameters
-search_query = "AI in marketing"  # The query to search for
+search_query = "restaurant marketing ideas Isfahan"  # The query to search for
 NUMBER_OF_RESULTS = 10  # Number of search results to process
 
 # Template for the prompt to be used later
-prompt = "extract 5-10 content ideas from the [post], and return the list in json format, [post]: {post}"
+prompt = "از این مطلب ۵ تا ۱۰ ایده‌ی تبلیغاتی برای رستوران پارکلند در اصفهان استخراج کن. ایده‌ها باید برای اینستاگرام مناسب باشند و به فارسی نوشته شوند. خروجی را به فرمت JSON برگردان. مطلب: {post}"
 
 # Pydantic model for data validation
 class Ideas(BaseModel):
