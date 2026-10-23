@@ -11,18 +11,36 @@ import time
 # Load environment variables
 load_dotenv()
 
-# Constants
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-if OPENAI_API_KEY is None:
-    raise ValueError("Please set the OPENAI_API_KEY in .env file.")
-
-openai.api_key = OPENAI_API_KEY
-async_openai_client = AsyncOpenAI(
-    api_key=OPENAI_API_KEY,
-)
-
 import instructor
-instructor.apatch(async_openai_client)
+
+# Constants
+# LLM_PROVIDER chooses where the ideas come from:
+#   "ollama" -> runs a model on your own computer (free)
+#   "grok"   -> uses the xAI Grok API (needs XAI_API_KEY)
+LLM_PROVIDER = os.getenv('LLM_PROVIDER', 'ollama').lower()
+
+if LLM_PROVIDER == 'grok':
+    api_key = os.getenv('XAI_API_KEY')
+    if not api_key:
+        raise ValueError("Please set XAI_API_KEY in .env file to use Grok.")
+    base_url = "https://api.x.ai/v1"
+    MODEL_FUNCTION = os.getenv('GROK_MODEL', 'grok-3-mini')
+    instructor_mode = instructor.Mode.TOOLS
+elif LLM_PROVIDER == 'ollama':
+    # Ollama does not check the key, but the client still needs a value
+    api_key = "ollama"
+    base_url = os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434/v1')
+    MODEL_FUNCTION = os.getenv('OLLAMA_MODEL', 'llama3.1')
+    instructor_mode = instructor.Mode.JSON
+else:
+    raise ValueError("LLM_PROVIDER must be 'grok' or 'ollama'.")
+
+# Both Grok and Ollama speak the OpenAI API format, so the same client works
+async_openai_client = AsyncOpenAI(
+    api_key=api_key,
+    base_url=base_url,
+)
+instructor.apatch(async_openai_client, mode=instructor_mode)
 
 
 def get_article_from_url(url):
@@ -47,13 +65,11 @@ def get_article_from_url(url):
 
 MAX_RETRIES = 3
 RETRY_DELAY = 2
-MODEL_FUNCTION = "gpt-3.5-turbo-1106"
-
 
 
 
 async def generate_ideas(user_prompt,response_model):
-    """Generates a response using OpenAI API and caches it if enabled."""
+    """Generates a response using the selected LLM provider (Grok or Ollama)."""
     response = None
 
     for attempt in range(MAX_RETRIES):

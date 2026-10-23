@@ -12,9 +12,13 @@ git clone https://github.com/hassancs91/AI-Content-Ideas-Generator-Prototype.git
 cp .env-example .env
 ```
 
-### Open the `.env` file and fill in the following environment variables:
+### Open the `.env` file and choose a provider:
 
-- `OPENAI_API_KEY`: Your OpenAI API key. You can get this from the OpenAI website.
+- `LLM_PROVIDER`: `ollama` (free, runs on your computer) or `grok` (xAI API). Defaults to `ollama`.
+
+**Ollama (free):** install Ollama from ollama.com, then run `ollama pull llama3.1` once. Ollama must be running while the app works. Set `OLLAMA_MODEL` to change the model.
+
+**Grok:** set `XAI_API_KEY` to your xAI API key and optionally `GROK_MODEL`. Grok usage may be billed by xAI.
 
 # Install required packages
 ## For Ubuntu 22.04, run the following command in your terminal:
